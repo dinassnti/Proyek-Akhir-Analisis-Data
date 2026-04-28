@@ -7,16 +7,16 @@ conda create --name main-ds python=3.12
 conda activate main-ds
 pip install -r requirements.txt
 
-**## Setup Environment - Shell/Terminal**
+## Setup Environment - Shell/Terminal
 Jika Anda menggunakan terminal standar atau shell, silakan gunakan perintah berikut:
-```bash```
+```bash
 mkdir proyek_analisis_data
 cd proyek_analisis_data
 pipenv install
 pipenv shell
 pip install -r requirements.txt
 
-**## Run Steamlit App**
+## Run Steamlit App
 Setelah semua library terinstal, Anda dapat menjalankan dashboard dengan perintah di bawah ini:
-``bash``
+``bash
 streamlit run dashboard/dashboard.py
