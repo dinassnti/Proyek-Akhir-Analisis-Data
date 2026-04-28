@@ -37,7 +37,7 @@ st.header('E-Commerce Performance Dashboard :sparkles:')
 
 # --- PERTANYAAN 1: TREN PENDAPATAN ---
 st.subheader("1. Monthly Revenue Trend")
-monthly_revenue = main_df.resample(rule='M', on='order_purchase_timestamp').total_revenue.sum().reset_index()
+monthly_revenue = main_df.resample(rule='ME', on='order_purchase_timestamp').total_revenue.sum().reset_index()
 
 fig, ax = plt.subplots(figsize=(12, 5))
 ax.plot(monthly_revenue["order_purchase_timestamp"], monthly_revenue["total_revenue"], marker='o', linewidth=2, color="#2E86C1")
