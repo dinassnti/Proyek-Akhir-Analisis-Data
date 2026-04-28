@@ -13,24 +13,31 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(current_dir, "main_data.csv")
 
 # Membaca data
-df = pd.read_csv(file_path)
-df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
+main_df = pd.read_csv(file_path)
+main_df['order_purchase_timestamp'] = pd.to_datetime(main_df['order_purchase_timestamp'])
 
 # --- SIDEBAR ---
 with st.sidebar:
     st.title("E-Commerce Dashboard")
     
-    # Filter Rentang Waktu
-    start_date, end_date = st.date_input(
-        label='Rentang Waktu',
-        min_value=df['order_purchase_timestamp'].min(),
-        max_value=df['order_purchase_timestamp'].max(),
-        value=[df['order_purchase_timestamp'].min(), df['order_purchase_timestamp'].max()]
-    )
+     # Input rentang tanggal dengan penanganan error sesuai saran Reviewer
+    try:
+        start_date, end_date = st.date_input(
+            label='Rentang Waktu',
+            min_value=main_df["order_purchase_timestamp"].min(),
+            max_value=main_df["order_purchase_timestamp"].max(),
+            value=[main_df["order_purchase_timestamp"].min(), main_df["order_purchase_timestamp"].max()]
+        )
+    except ValueError:
+        st.error("Silakan pilih rentang tanggal (Tanggal Mulai & Tanggal Akhir).")
+        st.stop() 
 
-# Filter Data Berdasarkan Sidebar
-main_df = df[(df["order_purchase_timestamp"] >= str(start_date)) & 
-             (df["order_purchase_timestamp"] <= str(end_date))]
+# --- PROSES FILTERING ---
+# Hasil filter disimpan di 'main_df_filtered'
+main_df_filtered = main_df[
+    (main_df["order_purchase_timestamp"] >= pd.to_datetime(start_date)) & 
+    (main_df["order_purchase_timestamp"] <= pd.to_datetime(end_date))
+]
 
 # --- HEADER ---
 st.header('E-Commerce Performance Dashboard :sparkles:')
