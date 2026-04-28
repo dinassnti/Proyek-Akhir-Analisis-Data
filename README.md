@@ -1,18 +1,22 @@
 # E-Commerce Data Analysis Dashboard ✨
 
-## Dashboard Preview
-Dashboard ini memberikan visualisasi data terkait performa penjualan e-commerce di Brazil, segmentasi pelanggan menggunakan analisis RFM, serta distribusi geografis pelanggan.
-
-## Struktur Proyek
-- `/dashboard`: Berisi file utama dashboard (`dashboard.py`) dan dataset yang telah dibersihkan (`main_data.csv`).
-- `/data`: Berisi dataset mentah (opsional).
-- `Proyek_Analisis_Data.ipynb`: File analisis data lengkap mulai dari Wrangling hingga Exploratory Data Analysis (EDA).
-- `requirements.txt`: Daftar library Python yang dibutuhkan.
-
-## Cara Menjalankan Secara Lokal
-### 1. Persiapan Environment
-Pastikan kamu sudah menginstal Python. Sangat disarankan menggunakan virtual environment.
+## Setup Environment - Anaconda
+Jika Anda ingin menjalankan proyek ini menggunakan Anaconda, silakan ikuti langkah-langkah berikut:
 ```bash
-conda create --name main-ds python=3.13
+conda create --name main-ds python=3.12
 conda activate main-ds
 pip install -r requirements.txt
+
+**## Setup Environment - Shell/Terminal**
+Jika Anda menggunakan terminal standar atau shell, silakan gunakan perintah berikut:
+```bash```
+mkdir proyek_analisis_data
+cd proyek_analisis_data
+pipenv install
+pipenv shell
+pip install -r requirements.txt
+
+**## Run Steamlit App**
+Setelah semua library terinstal, Anda dapat menjalankan dashboard dengan perintah di bawah ini:
+``bash``
+streamlit run dashboard/dashboard.py
