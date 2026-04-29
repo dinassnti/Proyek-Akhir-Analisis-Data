@@ -11,7 +11,6 @@ st.set_page_config(page_title="E-Commerce Analysis Dashboard", layout="wide")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(current_dir, "main_data.csv")
 
-# Membaca data
 main_df = pd.read_csv(file_path)
 main_df['order_purchase_timestamp'] = pd.to_datetime(main_df['order_purchase_timestamp'])
 
@@ -19,7 +18,6 @@ main_df['order_purchase_timestamp'] = pd.to_datetime(main_df['order_purchase_tim
 with st.sidebar:
     st.title("E-Commerce Dashboard")
     
-    # Input rentang tanggal dengan penanganan error
     try:
         start_date, end_date = st.date_input(
             label='Rentang Waktu',
@@ -43,12 +41,12 @@ st.header('E-Commerce Performance Dashboard :sparkles:')
 
 # --- PERTANYAAN 1: TREN PENDAPATAN ---
 st.subheader("1. Monthly Revenue Trend")
-# PERBAIKAN: Gunakan main_df_filtered agar filter berfungsi
+# PERBAIKAN: Gunakan main_df_filtered agar grafik berubah saat difilter
+# Gunakan rule='ME' untuk menghindari warning pada Pandas versi terbaru
 monthly_revenue = main_df_filtered.resample(rule='ME', on='order_purchase_timestamp').total_revenue.sum().reset_index()
 
 fig, ax = plt.subplots(figsize=(12, 5))
 ax.plot(monthly_revenue["order_purchase_timestamp"], monthly_revenue["total_revenue"], marker='o', linewidth=2, color="#2E86C1")
-ax.set_title("Total Revenue per Month (2017-2018)", fontsize=15)
 ax.set_xlabel(None)
 ax.set_ylabel("Revenue (BRL)")
 st.pyplot(fig)
@@ -60,6 +58,7 @@ st.subheader("2. Best Customer Based on RFM Parameters")
 # PERBAIKAN: Gunakan main_df_filtered
 snapshot_date = main_df_filtered['order_purchase_timestamp'].max() + pd.Timedelta(days=1)
 
+# PERBAIKAN: Hitung RFM dari data yang sudah difilter
 rfm_df = main_df_filtered.groupby('customer_unique_id').agg({
     'order_purchase_timestamp': lambda x: (snapshot_date - x.max()).days,
     'order_id': 'nunique',
@@ -73,11 +72,11 @@ col1, col2, col3 = st.columns(3)
 with col1:
     fig, ax = plt.subplots(figsize=(10, 8))
     top_recency = rfm_df.sort_values(by="recency", ascending=True).head(5)
-    # PERBAIKAN: Tambahkan hue dan legend=False untuk atasi warning
+    # Tambahkan hue untuk menghindari warning Seaborn
     sns.barplot(y="recency", x="customer_id", data=top_recency, hue="customer_id", palette="Blues", ax=ax, legend=False)
-    ax.set_title("By Recency (days)", fontsize=20)
+    ax.set_title("Recency (days)", fontsize=20)
     ax.set_ylabel(None)
-    ax.set_xlabel(None)
+    ax.set_xlabel("Customer ID", fontsize=15)
     ax.set_xticks([]) 
     st.pyplot(fig)
     plt.close(fig)
@@ -86,9 +85,9 @@ with col2:
     fig, ax = plt.subplots(figsize=(10, 8))
     top_frequency = rfm_df.sort_values(by="frequency", ascending=False).head(5)
     sns.barplot(y="frequency", x="customer_id", data=top_frequency, hue="customer_id", palette="Blues", ax=ax, legend=False)
-    ax.set_title("By Frequency", fontsize=20)
+    ax.set_title("Frequency", fontsize=20)
     ax.set_ylabel(None)
-    ax.set_xlabel(None)
+    ax.set_xlabel("Customer ID", fontsize=15)
     ax.set_xticks([])
     st.pyplot(fig)
     plt.close(fig)
@@ -97,9 +96,9 @@ with col3:
     fig, ax = plt.subplots(figsize=(10, 8))
     top_monetary = rfm_df.sort_values(by="monetary", ascending=False).head(5)
     sns.barplot(y="monetary", x="customer_id", data=top_monetary, hue="customer_id", palette="Blues", ax=ax, legend=False)
-    ax.set_title("By Monetary", fontsize=20)
+    ax.set_title("Monetary", fontsize=20)
     ax.set_ylabel(None)
-    ax.set_xlabel(None)
+    ax.set_xlabel("Customer ID", fontsize=15)
     ax.set_xticks([])
     st.pyplot(fig)
     plt.close(fig)
@@ -110,11 +109,10 @@ st.subheader("3. Customer Distribution by State")
 state_df = main_df_filtered.groupby("customer_state").customer_unique_id.nunique().sort_values(ascending=False).reset_index()
 
 fig, ax = plt.subplots(figsize=(12, 6))
-# PERBAIKAN: Tambahkan hue dan legend=False
-sns.barplot(x="customer_unique_id", y="customer_state", data=state_df.head(10), hue="customer_state", palette="viridis", ax=ax, legend=False)
-ax.set_title("Top 10 States with Most Customers", fontsize=15)
+# Tambahkan hue untuk menghindari warning Seaborn
+sns.barplot(x="customer_unique_id", y="customer_state", data=state_df.head(10), hue="customer_state", palette="viridis", legend=False)
 ax.set_xlabel("Number of Customers")
-ax.set_ylabel(None)
+ax.set_ylabel("State")
 st.pyplot(fig)
 plt.close(fig)
 
